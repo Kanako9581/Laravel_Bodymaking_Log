@@ -11,6 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'PostController@index')->name('top');
+Auth::routes();
+Route::resource('posts', 'PostController');
+Route::resource('likes', 'LikeController')->only(['index', 'store', 'destroy']);
+Route::resource('follows', 'FollowController')->only(['index', 'store', 'destroy']);
+Route::get('/{users}/follower', 'FollowController@followerIndex');
