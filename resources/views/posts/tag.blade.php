@@ -1,64 +1,14 @@
 @extends('layouts.logged_in')
 @section('title')
 @section('content')
-    <h1>{{ $title }}</h1>
-    <div class="container">
-        <a href="{{ route('posts.create') }}" class="post_create"><i class="fa-regular fa-pen-to-square"></i> 新規投稿</a>
-        <div>
-            <form action="{{ route('top') }}" method="get" class="form_search">
-                <input type="text" value="{{ $keyword }}" name="keyword" class="form_search_text">
-                <input type="submit" value="検索" class="form_search_submit">
-            </form>
-        </div>
-        <h2>おすすめユーザー</h2>
-        <ul class="recommended_user">
-            @forelse($recommended_users as $recommended_user)
-                <li>
-                    <div>
-                        <a href="{{ route('users.show', $recommended_user) }}">
-                        @if($recommended_user->image !== '')
-                            <img src="{{ \Storage::url($recommended_user->image) }}" class="profile_image_icon">
-                        @else
-                            <img src="{{ asset('images/no_image.png') }}">
-                        @endif
-                        {{ $recommended_user->name }}
-                    </a>
-                    </div>
-                    <div>
-                        @if(Auth::user()->isFollowing($recommended_users))
-                            <form method="post" action="{{ route('follow.destroy', $recommended_user) }}" class="follow">
-                                @csrf
-                                @method('delete')
-                                <input type="submit" value="フォロー解除" class="follow_button">
-                            </form>
-                        @else
-                            <form method="post" action="{{ route('follows.store') }}" class="follow">
-                                @csrf
-                                <input type="hidden" name="follow_id" value="{{ $recommended_user->id }}">
-                                <input type="submit" value="フォロー" class="follow_button">
-                            </form>
-                        @endif
-                    </div>
-                </li>
-            @empty
-                <li>おすすめユーザーはいません</li>
-            @endforelse
-        </ul>
-    </div>
+    <h1>{{ $title }} {{ $tag->tag }}</h1>
     <ul>
-        @forelse($posts as $post)
+        @forelse($tag_posts as $post)
             <li class="post">
                 <div class="post_content">
                     <div class="post_content_heading">
                         <h2>{{ $post->title }}</h2>
-                        <a href="{{ route('users.show', $post->user) }}">
-                        @if($post->user->image !== '')
-                            <img src="{{ \Storage::url($post->user->image) }}" class="profile_image_icon">
-                        @else
-                            <img src="{{ asset('images/no_image.png') }}">
-                        @endif
-                            {{ $post->user->name }}
-                        </a> ({{ $post->created_at }} 最終更新日:{{ $post->updated_at }})
+                        <a href="{{ route('users.show', $post->user) }}">{{ $post->user->name }}</a> ({{ $post->created_at }} 最終更新日:{{ $post->updated_at }})
                         <p>カテゴリー: {{ $post->category->name }}</p>
                     </div>
                     <div class="post_content_main">
@@ -73,7 +23,7 @@
                         <div class="tags">
                             タグ：
                             @forelse($post->tags as $tag)
-                                <a href="{{ route('posts.tag', $tag) }}">{{ $tag->tag }}</a>
+                                <a href="{{ route('posts.tag', $post) }}">{{ $tag->tag }}</a>
                             @empty
                                 <span> </span>
                             @endforelse
@@ -118,9 +68,9 @@
                         <form method="post" action="{{ route('comments.store') }}" class="form_comment">
                             @csrf
                             <input type="hidden" name="post_id" value="{{ $post->id }}">
-                            <!--<label>-->
-                                <!--<input type="text" name="body" placeholder="コメントを書く" class="form_comment_text">-->
-                            <!--</label>-->
+                                <!--<label>-->
+                                    <!--<input type="text" name="body" placeholder="コメントを書く" class="form_comment_text">-->
+                                <!--</label>-->
                             <div class="flex_comment_form">
                                 <div class="flex_comment_form_dummy" aria-hidden="true"></div>
                                 <textarea class="flex_comment_form_textarea"></textarea>
@@ -131,26 +81,23 @@
                 </div>
             </li>
         @empty
-            <li>投稿はありません</li>
+            <li>このタグに該当する投稿はありません</li>
         @endforelse
     </ul>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        $('.like_button').each(function(){
+        $('like_button').each(function(){
             $(this).on('click', function(){
                 $(this).next().submit();
             });
         });
         function flex_comment_form(el){
             const dummy = el.querySelector('.flex_comment_form_dummy');
-            el.querySelector('.flex_comment_form_textarea').addEventListener('input', e => {
-                 dummy.textContent = e.target.value + '\u200b';
+            el.querySelector('flex_comment_form_textarea').addEventListener('input', e => {
+                dummy.textContent = e.target.value + '\u200b';
             });
-         }
-         document.querySelectorAll('.flex_comment_form').forEach(flex_comment_form);
-         //let selectors = Array.from(document.querySelectorAll('.flex_comment_form'));//.foreach(flex_comment_form);
-         //for(let selector of selectors){
-         //   flex_comment_form(selector);
-         //}
+        }
+        document.querySelectorAll('.flex_comment_form').foreach(flex_comment_form);
     </script>
 @endsection
+        
