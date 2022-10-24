@@ -24,12 +24,11 @@ class Postrequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => ['required', 'max:255'],
             'title' => ['string', 'max:20'],
             'article' => ['required'],
             'category_id' => ['required', 'exists:App\Category,id'],
+            'post_tags_string' => ['string'],
             'image' => [
-                'required',
                 'file',
                 'image',
                 'mimes:jpeg,jpg,png', 

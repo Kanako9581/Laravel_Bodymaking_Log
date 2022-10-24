@@ -6,9 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    protected $fillable = ['user_id', 'article', 'category_id', 'comment', 'image'];
+    protected $table = 'posts';
+    protected $fillable = ['user_id', 'title', 'article', 'category_id', 'post_tags_string', 'image'];
     public function user(){
         return $this->belongsTo('App\User');
+    }
+    public function postImages(){
+        return $this->hasMany('App\PostImage');
+    }
+    public function tags(){
+        return $this->belongsToMany('App\Tag', 'post_tags');
     }
     public function comments(){
         return $this->hasMany('App\Comment');

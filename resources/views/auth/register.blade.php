@@ -1,12 +1,12 @@
 @extends('layouts.not_logged_in')
 @section('content')
     <h1>サインアップ</h1>
-    <form method="post" action="{{ route('register') }}">
+    <form method="post" action="{{ route('register') }}" class="form">
         @csrf
         <div>
             <label>
                 ユーザー名:
-                <input type="text" name="user_name">
+                <input type="text" name="name">
             </label>
         </div>
         <div>
@@ -27,6 +27,6 @@
                 <input type="password" name="password_confirmation">
             </label>
         </div>
-        <input type="submit" value="登録">
+        <input type="submit" value="登録" class="form_submit">
     </form>
 @endsection
